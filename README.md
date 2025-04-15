@@ -27,8 +27,6 @@ Este é um sistema especialista simples construído com [Experta](https://github
 
 ```
 .
-├── engine.py         # Regras de recomendação
-├── facts.py          # Definições dos fatos (perfil, orçamento, carros)
 ├── main.py           # Interface CLI e execução do motor
 ├── README.md
 ```

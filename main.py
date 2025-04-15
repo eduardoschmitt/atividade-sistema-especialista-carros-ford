@@ -1,6 +1,8 @@
 from experta import *
 import inspect
 
+
+#### Fatos ####
 class FaixaEtaria(Fact): 
     class Meta:
         unique = True
@@ -40,6 +42,7 @@ class SistemaCarros(KnowledgeEngine):
             return True
         return False
 
+    #### REGRAS ####
     # Adiciona perguntas se os fatos ainda não foram declarados
     @Rule(NOT(FaixaEtaria()))
     def perguntar_faixa_etaria(self):
@@ -253,6 +256,17 @@ class SistemaCarros(KnowledgeEngine):
     def sem_recomendacao(self, fe, ec, ev):
         self.regrasUsadas.append(inspect.currentframe().f_code.co_name)
         print(f"Nenhuma recomendação para o perfil: faixa_etaria={fe}, estado_civil={ec}, estilo_vida={ev}, experiencia={e}")
+    # Regra genérica caso nenhuma recomendação específica tenha sido feita
+    @Rule(FaixaEtaria(valor=MATCH.fe),
+          EstadoCivil(valor=MATCH.ec),
+          EstiloVida(valor=MATCH.ev),
+          NOT(Recomendado()),
+          salience=-1
+          )
+    def sem_recomendacao(self, fe, ec, ev):
+        if not self.perguntas_pendentes:
+            self.regrasUsadas.append(inspect.currentframe().f_code.co_name)
+            print(f"Nenhuma recomendação para o perfil: faixa_etaria={fe}, estado_civil={ec}, estilo_vida={ev}")
 
 # Execução
 engine = SistemaCarros()
@@ -263,4 +277,4 @@ while True:
     if not engine.proxima_pergunta():
         break
 
-#print(engine.regrasUsadas)
+print(engine.regrasUsadas)
